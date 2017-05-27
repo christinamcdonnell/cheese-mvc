@@ -8,12 +8,12 @@
 <nav th:replace="fragments :: navigation"></nav>
 
 <form method="post">
+    <div th:each="cds_cheese : ${cheeses}" class="checkbox">
+        <span th:text="${cds_cheese.key} "></span>
+        <input type="checkbox" name="cheeseToRemove" th:value="${cds_cheese.key}" />
 
-    <div th:each="cheese : ${cheeses}" class="checkbox">
-        <input type="checkbox" name="cheeseIds" th:value="${cheese.cheeseId}" th:id="${cheese.cheeseId}"/>
-        <label th:for="${cheese.cheeseId}" th:text="${cheese.name}"></label>
-        <br />
     </div>
+    <br></br>
 
     <input type="submit" value="Remove Cheese" />
 </form>

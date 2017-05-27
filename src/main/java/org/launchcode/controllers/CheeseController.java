@@ -45,15 +45,20 @@ public class CheeseController {
     }
 
     @RequestMapping(value = "remove", method=RequestMethod.GET)
-    public String displayRemoveCheeseForm(@RequestParam String cheeseName, @RequestParam String cheeseDescription) {
+    public String displayRemoveCheeseForm(Model model) {
         //AttributedString model;
-        model.addAttribute("title", "Add Cheese");
-        return "redirect:";
+        model.addAttribute( "cheeses", cheeses);
+        model.addAttribute("title", "Remove Cheese");
+
+        return "cheese/remove";
     }
 
     @RequestMapping(value="remove", method=RequestMethod.POST)
-    public String processRemoveCheeseForm(@RequestParam String cheeseName, @RequestParam String cheeseDescription) {
-        cheeses.put(cheeseName, cheeseDescription);
+    public String processRemoveCheeseForm(Model model, @RequestParam ArrayList<String> cheeseToRemove) {
+        for (String keyToRemove : cheeseToRemove) {
+            cheeses.remove(keyToRemove); //CHANGE THIS - DO I NEED TO LOOP THRU EA ARRAU:IST ELEMENT?
+        }
+
         // redirect to /cheese
         return "redirect:";
     }

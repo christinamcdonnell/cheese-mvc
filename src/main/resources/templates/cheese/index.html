@@ -10,7 +10,9 @@
 
 
 <ul>
-    <li th:each="cheese : ${cheeses}" th:text="${cheese}"> </li>
+    <div th:each="cds_cheese : ${cheeses}">
+        <li  th:text="${cds_cheese.key + ' ' + cds_cheese.value}" > </li>
+    </div>
 
 </ul>
 </body>
