@@ -11,7 +11,7 @@
 
 <ul>
     <div th:each="cds_cheese : ${cheeses}">
-        <li  th:text="${cds_cheese.key + ' ' + cds_cheese.value}" > </li>
+        <li  th:text="${cds_cheese.getName() + ' ' + cds_cheese.getDescription() }" > </li>
     </div>
 
 </ul>

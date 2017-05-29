@@ -1,5 +1,6 @@
 package org.launchcode.controllers;
 // package org.launchcode.cheesemvc.controllers;
+import org.launchcode.models.Cheese;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +19,7 @@ import java.util.HashMap;
 @RequestMapping("cheese")
 public class CheeseController {
     // static ArrayList<String> cheeses = new ArrayList<>();
-    static HashMap<String, String> cheeses = new HashMap();
+    static ArrayList<Cheese> cheeses = new ArrayList();
 
     // Request path /cheese because of RequestMapping above for the entire controller pkg
     @RequestMapping(value="")
@@ -39,7 +40,14 @@ public class CheeseController {
 
     @RequestMapping(value="add", method=RequestMethod.POST)
     public String processAddCheeseForm(@RequestParam String cheeseName, @RequestParam String cheeseDescription) {
-        cheeses.put(cheeseName, cheeseDescription);
+        //cheeses.add(cheeseName, cheeseDescription);
+        Cheese cheeseObjToPutInAL = new Cheese();
+
+        cheeseObjToPutInAL.setName(cheeseName);
+        cheeseObjToPutInAL.setDescription(cheeseDescription);
+
+        cheeses.add(cheeseObjToPutInAL);
+
         // redirect to /cheese
         return "redirect:";
     }
@@ -55,8 +63,23 @@ public class CheeseController {
 
     @RequestMapping(value="remove", method=RequestMethod.POST)
     public String processRemoveCheeseForm(Model model, @RequestParam ArrayList<String> cheeseToRemove) {
+        boolean able_to_remove = true;
+        ArrayList<Cheese> elementToRemove = new ArrayList();
+
         for (String keyToRemove : cheeseToRemove) {
-            cheeses.remove(keyToRemove); //CHANGE THIS - DO I NEED TO LOOP THRU EA ARRAU:IST ELEMENT?
+            for(Cheese curr_cheese_obj : cheeses) {
+                // If the keyToRemove (name of a cheese) matches the cheese name of an Cheese element in the array
+                // create an ArrayList of the Cheese objects to be removed outside the current for loop
+                // to avoid the concurrent
+                if ((curr_cheese_obj.getName()).equals(keyToRemove)) {
+                    //break;
+                    elementToRemove.add(curr_cheese_obj);
+                }
+            }
+            cheeses.removeAll(elementToRemove);
+
+            //able_to_remove = cheeses.remove(curr_cheese_obj);
+            // if (able_to_remove == false) { REPORT an ERROR}
         }
 
         // redirect to /cheese
