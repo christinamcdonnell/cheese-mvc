@@ -60,23 +60,24 @@ public class CheeseController {
         return "redirect:";
     }
 
-    @RequestMapping(value = "edit", method = RequestMethod.GET) // make /cheese/edit/3 & such work
+    @RequestMapping(value = "/edit/{cheeseId}", method = RequestMethod.GET) // make /cheese/edit/3 & such work
     public String displayEditForm(Model model, @PathVariable int cheeseId) {
-        model.addAttribute("cheeses", CheeseData.getById(cheeseId));
+        model.addAttribute("cheese", CheeseData.getById(cheeseId));
         model.addAttribute("title", "Edit Cheese");
-        return "cheese/edit" +  "/${cheeseId}";
+        return "cheese/edit";
     }
 
-    @RequestMapping(value = "edit", method = RequestMethod.POST)
-    public String processEditForm(int cheeseId, String name, String description) {
-        Cheese updateThisCheese = new Cheese(name, description);
+    @RequestMapping(value = "/edit/{cheeseId}", method = RequestMethod.POST)
+    public String processEditForm(Model model, int cheeseId, String name, String description) {
+        //Cheese updateThisCheese = new Cheese(); // Cheese c = CheeseData.getById(cheeseId); ?dont make new one?
 
-        updateThisCheese.CheeseData.getById(cheeseId);
-        updateThisCheese.name = name;
-        updateThisCheese.description = description;
+        Cheese updateThisCheese = CheeseData.getById(cheeseId);
+        updateThisCheese.setName(name);
+        updateThisCheese.setDescription(description);
 
-        model.addAttribute("cheeses", CheeseData.getById(cheeseId));
+       //  model.addAttribute("cheeses", CheeseData.getById(cheeseId));
+        model.addAttribute("cheese", updateThisCheese);
         model.addAttribute("title", "Edit Cheese");
-        return "redirect:";
+        return "redirect:..";
     }
 }
