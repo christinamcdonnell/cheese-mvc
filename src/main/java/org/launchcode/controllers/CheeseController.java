@@ -2,18 +2,23 @@ package org.launchcode.controllers;
 
 import org.launchcode.models.Cheese;
 import org.launchcode.models.CheeseData;
+import org.launchcode.models.CheeseType;
+import org.launchcode.models.Cheese;
+import org.launchcode.models.CheeseData;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
+
 /**
  * Created by LaunchCode
  */
 @Controller
 @RequestMapping("cheese")
 public class CheeseController {
-
 
     // Request path: /cheese
     @RequestMapping(value = "")
@@ -28,17 +33,20 @@ public class CheeseController {
     @RequestMapping(value = "add", method = RequestMethod.GET)
     public String displayAddCheeseForm(Model model) {
         model.addAttribute("title", "Add Cheese");
+        model.addAttribute(new Cheese());  // pass empty Cheese object into the view that renders the form. it uses the properties of the object to help render the form
+        model.addAttribute("cheeseTypes", CheeseType.values()); // gives list of possible values
         return "cheese/add";
     }
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
-    public String processAddCheeseForm(@ModelAttribute Cheese newCheese) {
-       /*
-       * Spring Boot does this behind the scenes from the @ModelAttribute usage
-       * newCheeese = new Cheese();  using the default constructor in Cheese.java  Cheese()noparams
-       * newCheese.setName(Request.getParameter("name");
-       * newCheeese.setDescription(Request.getParameter("description");
-        */
+    public String processAddCheeseForm(@ModelAttribute @Valid Cheese newCheese,
+                                       Errors errors, Model model) {
+
+        if (errors.hasErrors()){          // return to the cheese form if there are erros
+            model.addAttribute("title", "Add Cheese");
+            return "cheese/add";
+        }
+
         CheeseData.add(newCheese);
         return "redirect:";
     }
@@ -59,7 +67,6 @@ public class CheeseController {
 
         return "redirect:";
     }
-
     @RequestMapping(value = "/edit/{cheeseId}", method = RequestMethod.GET) // make /cheese/edit/3 & such work
     public String displayEditForm(Model model, @PathVariable int cheeseId) {
         model.addAttribute("cheese", CheeseData.getById(cheeseId));
@@ -75,9 +82,33 @@ public class CheeseController {
         updateThisCheese.setName(name);
         updateThisCheese.setDescription(description);
 
+        //  model.addAttribute("cheeses", CheeseData.getById(cheeseId));
+        model.addAttribute("cheese", updateThisCheese);
+        model.addAttribute("title", "Edit Cheese");
+        return "redirect:..";
+    }
+
+    /* @RequestMapping(value = "/edit/{cheeseId}", method = RequestMethod.GET) // make /cheese/edit/3 & such work
+    public String displayEditForm(Model model, @PathVariable int cheeseId) {
+        model.addAttribute("cheese", CheeseData.getById(cheeseId));
+        model.addAttribute("title", "Edit Cheese");
+        return "cheese/edit";
+    }
+    */
+
+    /*
+    @RequestMapping(value = "/edit/{cheeseId}", method = RequestMethod.POST)
+    public String processEditForm(Model model, int cheeseId, String name, String description) {
+        //Cheese updateThisCheese = new Cheese(); // Cheese c = CheeseData.getById(cheeseId); ?dont make new one?
+
+        Cheese updateThisCheese = CheeseData.getById(cheeseId);
+        updateThisCheese.setName(name);
+        updateThisCheese.setDescription(description);
+
        //  model.addAttribute("cheeses", CheeseData.getById(cheeseId));
         model.addAttribute("cheese", updateThisCheese);
         model.addAttribute("title", "Edit Cheese");
         return "redirect:..";
     }
+    */
 }
